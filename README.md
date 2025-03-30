@@ -1,225 +1,188 @@
 -- Bazuka Hub
 
-local ScreenGui = Instance.new("ScreenGui")
-local MainFrame = Instance.new("Frame")
-local TabHolder = Instance.new("Frame")
-local HomeTab = Instance.new("TextButton")
-local TeleportTab = Instance.new("TextButton")
-local WeaponsTab = Instance.new("TextButton")
-local VehiclesTab = Instance.new("TextButton")
-local CloseButton = Instance.new("TextButton")
-local HomeFrame = Instance.new("Frame")
-local TeleportFrame = Instance.new("Frame")
-local WeaponsFrame = Instance.new("Frame")
-local VehiclesFrame = Instance.new("Frame")
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
 
-ScreenGui.Parent = game.CoreGui
-ScreenGui.Name = "Bazuka Hub"
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
-MainFrame.Parent = ScreenGui
-MainFrame.Size = UDim2.new(0, 500, 0, 350)
-MainFrame.Position = UDim2.new(0.5, -250, 0.5, -175)
-MainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-MainFrame.BorderColor3 = Color3.fromRGB(255, 255, 255)
-MainFrame.BorderSizePixel = 2
-MainFrame.Active = true
-MainFrame.Draggable = true
-
-TabHolder.Parent = MainFrame
-TabHolder.Size = UDim2.new(1, 0, 0, 40)
-TabHolder.Position = UDim2.new(0, 0, 0, 0)
-TabHolder.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-
-local function createTabButton(name, posX)
-    local button = Instance.new("TextButton")
-    button.Parent = TabHolder
-    button.Size = UDim2.new(0, 120, 0, 40)
-    button.Position = UDim2.new(0, posX, 0, 0)
-    button.Text = name
-    button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.BorderSizePixel = 0
-    return button
-end
-
-HomeTab = createTabButton("🏠 Home", 0)
-TeleportTab = createTabButton("🚀 Teleport", 120)
-WeaponsTab = createTabButton("🔫 Armas", 240)
-VehiclesTab = createTabButton("🚗 Veículos", 360)
-
-CloseButton.Parent = MainFrame
-CloseButton.Size = UDim2.new(0, 80, 0, 30)
-CloseButton.Position = UDim2.new(1, -90, 0, 10)
-CloseButton.Text = "Fechar"
-CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-CloseButton.BorderSizePixel = 0
-CloseButton.MouseButton1Click:Connect(function()
-    ScreenGui:Destroy()
-end)
-
-local function switchTab(tab)
-    HomeFrame.Visible = false
-    TeleportFrame.Visible = false
-    WeaponsFrame.Visible = false
-    VehiclesFrame.Visible = false
-    if tab == "Home" then
-        HomeFrame.Visible = true
-    elseif tab == "Teleport" then
-        TeleportFrame.Visible = true
-    elseif tab == "Weapons" then
-        WeaponsFrame.Visible = true
-    elseif tab == "Vehicles" then
-        VehiclesFrame.Visible = true
+local function activateKillAura()
+    while true do
+        for _, target in pairs(game.Players:GetPlayers()) do
+            if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                local targetPos = target.Character.HumanoidRootPart.Position
+                if (player.Character.HumanoidRootPart.Position - targetPos).Magnitude < 10 then
+                    print("Kill Aura ativado!")
+                end
+            end
+        end
+        wait(1)
     end
 end
 
-HomeFrame.Parent = MainFrame
-HomeFrame.Size = UDim2.new(1, 0, 1, -40)
-HomeFrame.Position = UDim2.new(0, 0, 0, 40)
-HomeFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-HomeFrame.Visible = true
-
-TeleportFrame.Parent = MainFrame
-TeleportFrame.Size = UDim2.new(1, 0, 1, -40)
-TeleportFrame.Position = UDim2.new(0, 0, 0, 40)
-TeleportFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-TeleportFrame.Visible = false
-
-WeaponsFrame.Parent = MainFrame
-WeaponsFrame.Size = UDim2.new(1, 0, 1, -40)
-WeaponsFrame.Position = UDim2.new(0, 0, 0, 40)
-WeaponsFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-WeaponsFrame.Visible = false
-
-VehiclesFrame.Parent = MainFrame
-VehiclesFrame.Size = UDim2.new(1, 0, 1, -40)
-VehiclesFrame.Position = UDim2.new(0, 0, 0, 40)
-VehiclesFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-VehiclesFrame.Visible = false
-
-HomeTab.MouseButton1Click:Connect(function()
-    switchTab("Home")
-end)
-TeleportTab.MouseButton1Click:Connect(function()
-    switchTab("Teleport")
-end)
-WeaponsTab.MouseButton1Click:Connect(function()
-    switchTab("Weapons")
-end)
-VehiclesTab.MouseButton1Click:Connect(function()
-    switchTab("Vehicles")
-end)
-
-local function activateKillAura()
-    print("Kill Aura ativado!")
-end
-local function deactivateKillAura()
-    print("Kill Aura desativado!")
-end
-
 local function activateESP()
-    print("ESP ativado!")
-end
-local function deactivateESP()
-    print("ESP desativado!")
+    for _, target in pairs(game.Players:GetPlayers()) do
+        if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+            local espPart = Instance.new("BillboardGui")
+            espPart.Adornee = target.Character.HumanoidRootPart
+            espPart.Parent = target.Character
+            espPart.Size = UDim2.new(0, 200, 0, 50)
+            espPart.StudsOffset = Vector3.new(0, 2, 0)
+            local textLabel = Instance.new("TextLabel")
+            textLabel.Parent = espPart
+            textLabel.Text = target.Name
+            textLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+            textLabel.BackgroundTransparency = 1
+        end
+    end
 end
 
 local function activateNoclip()
-    print("Noclip ativado!")
-end
-local function deactivateNoclip()
-    print("Noclip desativado!")
-end
-
-local function teleportToPlayer(playerName)
-    print("Teleportando até " .. playerName)
-end
-
-local function pullPlayer(playerName)
-    print("Puxando jogador " .. playerName)
-end
-
-local function giveGun(gunName)
-    print("Pegando arma: " .. gunName)
-end
-
-local function pullCar()
-    print("Puxando carros próximos...")
+    local character = player.Character
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    humanoid.PlatformStand = true
+    character:WaitForChild("HumanoidRootPart").CFrame = character.HumanoidRootPart.CFrame + Vector3.new(0, 5, 0)
 end
 
 local function giveCard()
-    print("Pegando cartão de desbloqueio de portas...")
+    local card = game.ReplicatedStorage:WaitForChild("Card")
+    local clone = card:Clone()
+    clone.Parent = player.Backpack
+    print("Cartão de desbloqueio obtido!")
 end
 
-local killAuraButton = Instance.new("TextButton")
-killAuraButton.Parent = HomeFrame
-killAuraButton.Size = UDim2.new(0, 200, 0, 40)
-killAuraButton.Position = UDim2.new(0, 10, 0, 10)
-killAuraButton.Text = "Kill Aura"
-killAuraButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-killAuraButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-killAuraButton.MouseButton1Click:Connect(function()
-    activateKillAura()
-end)
+local function teleportToPlayer(playerName)
+    for _, target in pairs(game.Players:GetPlayers()) do
+        if target.Name == playerName then
+            player.Character:WaitForChild("HumanoidRootPart").CFrame = target.Character.HumanoidRootPart.CFrame
+            print("Teleportado até " .. playerName)
+        end
+    end
+end
 
-local espButton = Instance.new("TextButton")
-espButton.Parent = HomeFrame
-espButton.Size = UDim2.new(0, 200, 0, 40)
-espButton.Position = UDim2.new(0, 10, 0, 60)
-espButton.Text = "ESP"
-espButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-espButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+local function pullPlayer(playerName)
+    for _, target in pairs(game.Players:GetPlayers()) do
+        if target.Name == playerName then
+            local targetPosition = target.Character.HumanoidRootPart.Position
+            player.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+            print("Puxando jogador " .. playerName)
+        end
+    end
+end
 
-local noclipButton = Instance.new("TextButton")
-noclipButton.Parent = HomeFrame
-noclipButton.Size = UDim2.new(0, 200, 0, 40)
-noclipButton.Position = UDim2.new(0, 10, 0, 110)
-noclipButton.Text = "Noclip"
-noclipButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-noclipButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+local function makeDraggable(frame)
+    local dragToggle = nil
+    local dragSpeed = 0.25
+    local dragInput, dragStart, startPos
 
-local gunButton = Instance.new("TextButton")
-gunButton.Parent = WeaponsFrame
-gunButton.Size = UDim2.new(0, 200, 0, 40)
-gunButton.Position = UDim2.new(0, 10, 0, 10)
-gunButton.Text = "AK-47"
-gunButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-gunButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-gunButton.MouseButton1Click:Connect(function()
-    giveGun("AK-47")
-end)
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragToggle = true
+            dragStart = input.Position
+            startPos = frame.Position
+            input.Changed:Connect(function()
+                if dragToggle then
+                    local delta = input.Position - dragStart
+                    frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+                end
+            end)
+        end
+    end)
 
-local teleportButton = Instance.new("TextButton")
-teleportButton.Parent = TeleportFrame
-teleportButton.Size = UDim2.new(0, 200, 0, 40)
-teleportButton.Position = UDim2.new(0, 10, 0, 10)
-teleportButton.Text = "Teleportar"
-teleportButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-teleportButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-teleportButton.MouseButton1Click:Connect(function()
-    teleportToPlayer("JogadorExemplo")
-end)
+    frame.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragToggle = false
+        end
+    end)
+end
 
-local vehicleButton = Instance.new("TextButton")
-vehicleButton.Parent = VehiclesFrame
-vehicleButton.Size = UDim2.new(0, 200, 0, 40)
-vehicleButton.Position = UDim2.new(0, 10, 0, 10)
-vehicleButton.Text = "Puxar Carro"
-vehicleButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-vehicleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-vehicleButton.MouseButton1Click:Connect(function()
-    pullCar()
-end)
+local function createPanel()
+    local panel = Instance.new("Frame")
+    panel.Size = UDim2.new(0, 300, 0, 400)
+    panel.Position = UDim2.new(0, 50, 0, 50)
+    panel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    panel.BackgroundTransparency = 0.5
+    panel.Parent = game.CoreGui
+    makeDraggable(panel)
 
-local cardButton = Instance.new("TextButton")
-cardButton.Parent = HomeFrame
-cardButton.Size = UDim2.new(0, 200, 0, 40)
-cardButton.Position = UDim2.new(0, 10, 0, 160)
-cardButton.Text = "Pegar Cartão"
-cardButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-cardButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-cardButton.MouseButton1Click:Connect(function()
-    giveCard()
-end)
+    local toggleButton = Instance.new("TextButton")
+    toggleButton.Text = "+"
+    toggleButton.Size = UDim2.new(0, 30, 0, 30)
+    toggleButton.Position = UDim2.new(0, 270, 0, 10)
+    toggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    toggleButton.Parent = panel
+
+    local function closePanel()
+        panel.Visible = false
+        toggleButton.Text = "+"
+    end
+
+    local function openPanel()
+        panel.Visible = true
+        toggleButton.Text = "−"
+    end
+
+    toggleButton.MouseButton1Click:Connect(function()
+        if panel.Visible then
+            closePanel()
+        else
+            openPanel()
+        end
+    end)
+
+    local function createButton(name, position, size, callback)
+        local button = Instance.new("TextButton")
+        button.Text = name
+        button.Size = size
+        button.Position = position
+        button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+        button.TextColor3 = Color3.fromRGB(255, 255, 255)
+        button.Parent = panel
+        button.MouseButton1Click:Connect(callback)
+        return button
+    end
+
+    createButton("Kill Aura", UDim2.new(0, 50, 0, 50), UDim2.new(0, 200, 0, 50), function()
+        activateKillAura()
+    end)
+
+    createButton("ESP", UDim2.new(0, 50, 0, 110), UDim2.new(0, 200, 0, 50), function()
+        activateESP()
+    end)
+
+    createButton("Noclip", UDim2.new(0, 50, 0, 170), UDim2.new(0, 200, 0, 50), function()
+        activateNoclip()
+    end)
+
+    createButton("Cartão", UDim2.new(0, 50, 0, 230), UDim2.new(0, 200, 0, 50), function()
+        giveCard()
+    end)
+
+    createButton("Teleportar", UDim2.new(0, 50, 0, 290), UDim2.new(0, 200, 0, 50), function()
+        teleportToPlayer("NomeDoJogador")
+    end)
+
+    createButton("Puxar", UDim2.new(0, 50, 0, 350), UDim2.new(0, 200, 0, 50), function()
+        pullPlayer("NomeDoJogador")
+    end)
+end
+
+local function showNotification()
+    local notification = Instance.new("Frame")
+    notification.Size = UDim2.new(0, 300, 0, 50)
+    notification.Position = UDim2.new(0.5, -150, 0, 10)
+    notification.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    notification.BackgroundTransparency = 0.7
+    notification.Parent = game.CoreGui
+
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Text = "Bazuka Hub"
+    textLabel.Size = UDim2.new(1, 0, 1, 0)
+    textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    textLabel.BackgroundTransparency = 1
+    textLabel.Parent = notification
+
+    wait(2)
+    notification:Destroy()
+end
+
+showNotification()
+createPanel()
