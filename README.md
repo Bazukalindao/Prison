@@ -96,10 +96,11 @@ end
 local function createPanel()
     local panel = Instance.new("Frame")
     panel.Size = UDim2.new(0, 300, 0, 400)
-    panel.Position = UDim2.new(0, 50, 0, 50)
+    panel.Position = UDim2.new(0.5, -150, 0.5, -200)  -- Centralizando o painel
     panel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     panel.BackgroundTransparency = 0.5
-    panel.Parent = game.CoreGui
+    panel.Parent = player:WaitForChild("PlayerGui")  -- Usando PlayerGui em vez de CoreGui
+    panel.Visible = true
     makeDraggable(panel)
 
     local toggleButton = Instance.new("TextButton")
@@ -171,7 +172,7 @@ local function showNotification()
     notification.Position = UDim2.new(0.5, -150, 0, 10)
     notification.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     notification.BackgroundTransparency = 0.7
-    notification.Parent = game.CoreGui
+    notification.Parent = player:WaitForChild("PlayerGui")  -- Usando PlayerGui
 
     local textLabel = Instance.new("TextLabel")
     textLabel.Text = "Bazuka Hub"
